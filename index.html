@@ -4,27 +4,151 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LIVIA ❤️</title>
+
 <style>
-body{margin:0;background:black;color:white;font-family:'Segoe UI',sans-serif;text-align:center;overflow-x:hidden;}
-canvas{position:fixed;top:0;left:0;z-index:-3;}
-section{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;opacity:0;transform:translateY(40px);transition:1.5s;}
-section.show{opacity:1;transform:translateY(0);}
-h1{color:red;font-size:2.2em;}
-button{padding:12px 25px;border:none;border-radius:30px;background:red;color:white;cursor:pointer;margin:10px;transition:0.3s;}
-button:hover{background:white;color:red;transform:scale(1.05);}
-input{padding:10px;border-radius:20px;border:none;margin:10px;text-align:center;}
-#letter{max-width:600px;font-size:1.2em;line-height:1.6;white-space:pre-line;}
-.firework{position:fixed;width:5px;height:5px;background:red;border-radius:50%;animation:explode 1s ease-out forwards;}
-@keyframes explode{to{transform:translate(var(--x),var(--y));opacity:0;}}
-#final{position:fixed;top:0;left:0;width:100%;height:100%;background:black;display:flex;justify-content:center;align-items:center;flex-direction:column;opacity:0;pointer-events:none;transition:1s;z-index:10;}
-#final.show{opacity:1;pointer-events:auto;}
-.gallery{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;}
-.gallery img{width:200px;height:250px;object-fit:cover;border-radius:15px;border:2px solid red;transition:0.5s;}
-.gallery img:hover{transform:scale(1.1);box-shadow:0 0 20px red;}
-.timeline{border-left:2px solid red;padding-left:20px;text-align:left;max-width:400px;}
-.timeline div{margin:20px 0;}
+body{
+margin:0;
+background:black;
+color:white;
+font-family:'Segoe UI',sans-serif;
+text-align:center;
+overflow-x:hidden;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-3;
+}
+
+section{
+min-height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+padding:20px;
+opacity:0;
+transform:translateY(40px);
+transition:1.5s;
+}
+
+section.show{
+opacity:1;
+transform:translateY(0);
+}
+
+h1{
+color:red;
+font-size:2.2em;
+}
+
+button{
+padding:12px 25px;
+border:none;
+border-radius:30px;
+background:red;
+color:white;
+cursor:pointer;
+margin:10px;
+transition:0.3s;
+}
+
+button:hover{
+background:white;
+color:red;
+transform:scale(1.05);
+}
+
+input{
+padding:10px;
+border-radius:20px;
+border:none;
+margin:10px;
+text-align:center;
+}
+
+#letter{
+max-width:600px;
+font-size:1.2em;
+line-height:1.6;
+white-space:pre-line;
+}
+
+.timeline{
+border-left:2px solid red;
+padding-left:20px;
+text-align:left;
+max-width:400px;
+}
+
+.timeline div{
+margin:20px 0;
+}
+
+.gallery{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:15px;
+}
+
+.gallery img,
+.gallery video{
+width:250px;
+height:250px;
+object-fit:cover;
+border-radius:15px;
+box-shadow:0 0 15px rgba(255,0,100,0.4);
+transition:0.3s;
+}
+
+.gallery img:hover,
+.gallery video:hover{
+transform:scale(1.05);
+}
+
+.firework{
+position:fixed;
+width:5px;
+height:5px;
+background:red;
+border-radius:50%;
+animation:explode 1s ease-out forwards;
+}
+
+@keyframes explode{
+to{
+transform:translate(var(--x),var(--y));
+opacity:0;
+}
+}
+
+#final{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+opacity:0;
+pointer-events:none;
+transition:1s;
+z-index:10;
+}
+
+#final.show{
+opacity:1;
+pointer-events:auto;
+}
 </style>
 </head>
+
 <body>
 
 <canvas id="stars"></canvas>
@@ -63,10 +187,19 @@ input{padding:10px;border-radius:20px;border:none;margin:10px;text-align:center;
 <!-- GALERIE -->
 <section>
 <h1>Nos Souvenirs</h1>
+
 <div class="gallery">
 <img src="photo1.jpg">
 <img src="photo2.jpg">
 <img src="photo3.jpg">
+
+<video controls>
+<source src="video1.mp4" type="video/mp4">
+</video>
+
+<video controls>
+<source src="video2.mp4" type="video/mp4">
+</video>
 </div>
 </section>
 
@@ -104,13 +237,29 @@ document.getElementById("intro").classList.add("show");
 // START EXPERIENCE
 function startExperience(){
 document.getElementById("music").play();
-document.getElementById("loveLetter").classList.add("show");
+document.querySelectorAll("section").forEach(sec=>{
+sec.classList.add("show");
+});
 typeWriter();
 }
 
-// TYPEWRITER LETTRE
-const text=`Livia,\n\nDepuis le 2 Novembre 2025 à 15h08,\nma vie a changé.\n\nTu es mon petit rayon de soleil,\ncelle qui illumine mes journées,\ncelle que je choisis chaque jour.\n\nJe t’aime plus que les mots\nne pourront jamais l’expliquer.\n\nPour toujours. ❤️`;
+// TYPEWRITER
+const text=`Livia,
+
+Depuis le 2 Novembre 2025 à 15h08,
+ma vie a changé.
+
+Tu es mon petit rayon de soleil,
+celle qui illumine mes journées,
+celle que je choisis chaque jour.
+
+Je t’aime plus que les mots
+ne pourront jamais l’expliquer.
+
+Pour toujours. ❤️`;
+
 let i=0;
+
 function typeWriter(){
 if(i<text.length){
 document.getElementById("letter").innerHTML+=text.charAt(i);
@@ -119,11 +268,12 @@ setTimeout(typeWriter,40);
 }
 }
 
-// DOUBLE CLICK FINAL SURPRISE
+// DOUBLE CLICK FINAL
 document.addEventListener("dblclick",()=>{
 document.getElementById("final").classList.add("show");
 launchFireworks();
 });
+
 function closeFinal(){
 document.getElementById("final").classList.remove("show");
 }
@@ -145,16 +295,31 @@ setTimeout(()=>f.remove(),1200);
 // ÉTOILES
 const canvas=document.getElementById("stars");
 const ctx=canvas.getContext("2d");
+
+function resizeCanvas(){
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize",resizeCanvas);
+
 let stars=[];
 for(let i=0;i<300;i++){
-stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*2});
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+radius:Math.random()*2
+});
 }
+
 function drawStars(){
 ctx.clearRect(0,0,canvas.width,canvas.height);
 ctx.fillStyle="white";
-stars.forEach(s=>{ctx.beginPath();ctx.arc(s.x,s.y,s.radius,0,Math.PI*2);ctx.fill();});
+stars.forEach(s=>{
+ctx.beginPath();
+ctx.arc(s.x,s.y,s.radius,0,Math.PI*2);
+ctx.fill();
+});
 requestAnimationFrame(drawStars);
 }
 drawStars();
