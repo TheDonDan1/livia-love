@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIVIA ❤️</title>
+<style>
+body{margin:0;background:black;color:white;font-family:'Segoe UI',sans-serif;text-align:center;overflow-x:hidden;}
+canvas{position:fixed;top:0;left:0;z-index:-3;}
+section{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;opacity:0;transform:translateY(40px);transition:1.5s;}
+section.show{opacity:1;transform:translateY(0);}
+h1{color:red;font-size:2.2em;}
+button{padding:12px 25px;border:none;border-radius:30px;background:red;color:white;cursor:pointer;margin:10px;transition:0.3s;}
+button:hover{background:white;color:red;transform:scale(1.05);}
+input{padding:10px;border-radius:20px;border:none;margin:10px;text-align:center;}
+#letter{max-width:600px;font-size:1.2em;line-height:1.6;white-space:pre-line;}
+.firework{position:fixed;width:5px;height:5px;background:red;border-radius:50%;animation:explode 1s ease-out forwards;}
+@keyframes explode{to{transform:translate(var(--x),var(--y));opacity:0;}}
+#final{position:fixed;top:0;left:0;width:100%;height:100%;background:black;display:flex;justify-content:center;align-items:center;flex-direction:column;opacity:0;pointer-events:none;transition:1s;z-index:10;}
+#final.show{opacity:1;pointer-events:auto;}
+.gallery{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;}
+.gallery img{width:200px;height:250px;object-fit:cover;border-radius:15px;border:2px solid red;transition:0.5s;}
+.gallery img:hover{transform:scale(1.1);box-shadow:0 0 20px red;}
+.timeline{border-left:2px solid red;padding-left:20px;text-align:left;max-width:400px;}
+.timeline div{margin:20px 0;}
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<!-- LOGIN -->
+<section id="login" class="show">
+<h1>Accès Privé ❤️</h1>
+<input type="password" id="pass" placeholder="Mot de passe">
+<button onclick="checkPass()">Entrer</button>
+</section>
+
+<!-- INTRO -->
+<section id="intro">
+<h1>LIVIA ❤️</h1>
+<p>MON PETIT RAYON DE SOLEIL</p>
+<p>Depuis le 2 Novembre 2025 à 15h08</p>
+<button onclick="startExperience()">Entrer dans notre univers ✨</button>
+</section>
+
+<!-- LETTRE -->
+<section id="loveLetter">
+<h1>Ma Lettre</h1>
+<div id="letter"></div>
+</section>
+
+<!-- TIMELINE -->
+<section>
+<h1>Notre Timeline</h1>
+<div class="timeline">
+<div><strong>2 Nov 2025 – 15h08</strong><br>Le début de tout ❤️</div>
+<div><strong>Premier fou rire</strong><br>Moment gravé.</div>
+<div><strong>Aujourd’hui</strong><br>Plus forts que jamais.</div>
+</div>
+</section>
+
+<!-- GALERIE -->
+<section>
+<h1>Nos Souvenirs</h1>
+<div class="gallery">
+<img src="photo1.jpg">
+<img src="photo2.jpg">
+<img src="photo3.jpg">
+</div>
+</section>
+
+<!-- CARTE -->
+<section>
+<h1>Notre Lieu Symbolique</h1>
+<iframe
+width="300"
+height="200"
+style="border:0;border-radius:15px;"
+loading="lazy"
+allowfullscreen
+src="https://www.google.com/maps?q=Lubumbashi&output=embed">
+</iframe>
+</section>
+
+<!-- FINAL -->
+<div id="final">
+<h1 style="color:red;font-size:2.5em;">JE T’AIME LIVIA ❤️</h1>
+<p>Pour l’éternité.</p>
+<button onclick="closeFinal()">Revenir</button>
+</div>
+
+<audio id="music" src="music.mp3"></audio>
+
+<script>
+// PASSWORD
+function checkPass(){
+if(document.getElementById("pass").value==="3123"){
+document.getElementById("login").classList.remove("show");
+document.getElementById("intro").classList.add("show");
+}
+}
+
+// START EXPERIENCE
+function startExperience(){
+document.getElementById("music").play();
+document.getElementById("loveLetter").classList.add("show");
+typeWriter();
+}
+
+// TYPEWRITER LETTRE
+const text=`Livia,\n\nDepuis le 2 Novembre 2025 à 15h08,\nma vie a changé.\n\nTu es mon petit rayon de soleil,\ncelle qui illumine mes journées,\ncelle que je choisis chaque jour.\n\nJe t’aime plus que les mots\nne pourront jamais l’expliquer.\n\nPour toujours. ❤️`;
+let i=0;
+function typeWriter(){
+if(i<text.length){
+document.getElementById("letter").innerHTML+=text.charAt(i);
+i++;
+setTimeout(typeWriter,40);
+}
+}
+
+// DOUBLE CLICK FINAL SURPRISE
+document.addEventListener("dblclick",()=>{
+document.getElementById("final").classList.add("show");
+launchFireworks();
+});
+function closeFinal(){
+document.getElementById("final").classList.remove("show");
+}
+
+// FIREWORK
+function launchFireworks(){
+for(let i=0;i<100;i++){
+let f=document.createElement("div");
+f.classList.add("firework");
+f.style.left=window.innerWidth/2+"px";
+f.style.top=window.innerHeight/2+"px";
+f.style.setProperty('--x',(Math.random()*500-250)+"px");
+f.style.setProperty('--y',(Math.random()*500-250)+"px");
+document.body.appendChild(f);
+setTimeout(()=>f.remove(),1200);
+}
+}
+
+// ÉTOILES
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+let stars=[];
+for(let i=0;i<300;i++){
+stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*2});
+}
+function drawStars(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="white";
+stars.forEach(s=>{ctx.beginPath();ctx.arc(s.x,s.y,s.radius,0,Math.PI*2);ctx.fill();});
+requestAnimationFrame(drawStars);
+}
+drawStars();
+</script>
+
+</body>
+</html>
