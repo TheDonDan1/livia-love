@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Notre Histoire ❤️</title>
-
 <style>
 body{
   margin:0;
@@ -15,7 +14,7 @@ body{
   text-align:center;
 }
 
-/* INTRO STUDIO */
+/* INTRO */
 #intro{
   position:fixed;
   width:100%;
@@ -29,31 +28,14 @@ body{
   z-index:30;
   animation:fadeOut 4s forwards 4s;
 }
-
-@keyframes fadeOut{
-  to{opacity:0;visibility:hidden;}
-}
+@keyframes fadeOut{to{opacity:0;visibility:hidden;}}
 
 /* ÉTOILES */
-canvas{
-  position:fixed;
-  top:0;
-  left:0;
-  z-index:0;
-}
+canvas{position:fixed;top:0;left:0;z-index:0;}
 
 /* TITRES */
-h1{
-  margin-top:20px;
-  font-size:2em;
-  position:relative;
-  z-index:5;
-}
-
-#counter{
-  position:relative;
-  z-index:5;
-}
+h1{margin-top:20px;font-size:2em;position:relative;z-index:5;}
+#counter{position:relative;z-index:5;}
 
 /* GALERIE */
 .gallery{
@@ -66,7 +48,6 @@ h1{
   overflow:hidden;
   z-index:5;
 }
-
 .gallery img,
 .gallery video{
   position:absolute;
@@ -74,14 +55,30 @@ h1{
   max-height:80%;
   border-radius:20px;
   opacity:0;
-  transition:opacity 2s ease-in-out, transform 10s ease-in-out;
+  transition:opacity 1s ease-in-out, transform 1s ease-in-out;
   box-shadow:0 0 40px rgba(255,255,255,0.3);
   transform:scale(1);
 }
-
 .active{
   opacity:1;
   transform:scale(1.05);
+}
+
+/* BOUTONS */
+#controls{
+  position:relative;
+  z-index:10;
+  margin-top:10px;
+}
+button{
+  padding:10px 20px;
+  margin:0 10px;
+  font-size:1em;
+  cursor:pointer;
+  border:none;
+  border-radius:8px;
+  background:#fff;
+  color:black;
 }
 
 /* MESSAGE FINAL */
@@ -91,7 +88,7 @@ h1{
   width:100%;
   font-size:2em;
   opacity:0;
-  transition:3s;
+  transition:1s;
   z-index:10;
 }
 
@@ -125,10 +122,9 @@ h1{
 }
 </style>
 </head>
-
 <body>
 
-<div id="intro">DEM ETRIUS STUDIOS</div>
+<div id="intro">THE DON STUDIOS</div>
 
 <canvas id="stars"></canvas>
 
@@ -157,30 +153,32 @@ h1{
   <video src="assets/VID-20260116-WA0140.mp4" muted></video>
 </div>
 
-<div id="finalMessage">
-💍 Pour toujours toi et moi ❤️
+<div id="controls">
+  <button id="prevBtn">⬅ Précédent</button>
+  <button id="nextBtn">Suivant ➡</button>
 </div>
+
+<div id="finalMessage">💍 Pour toujours toi et moi ❤️</div>
 
 <div id="credits">
 <h1 style="color:red;">FIN ❤️</h1>
-<p>Une histoire écrite par Demetrius</p>
+<p>Une histoire écrite par Dan NK</p>
 <p>Avec Livia comme plus belle actrice</p>
 <p>Depuis le 2 Novembre 2025</p>
 </div>
 
-<!-- AUDIO -->
 <audio id="music" src="assets/tems-me-u.mp3" loop></audio>
 <button id="playMusic">▶ Play Music</button>
 
 <script>
-/* BOUTON PLAY AUDIO */
+// Musique
 document.getElementById("playMusic").onclick = () => {
   const music = document.getElementById("music");
   music.play();
   document.getElementById("playMusic").style.display="none";
 };
 
-/* ÉTOILES */
+// Étoiles
 const canvas = document.getElementById("stars");
 const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
@@ -188,14 +186,8 @@ canvas.height = window.innerHeight;
 
 let stars=[];
 for(let i=0;i<200;i++){
-  stars.push({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    radius:Math.random()*2,
-    speed:Math.random()*0.5
-  });
+  stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*2,speed:Math.random()*0.5});
 }
-
 function drawStars(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.fillStyle="white";
@@ -204,79 +196,53 @@ function drawStars(){
     ctx.arc(s.x,s.y,s.radius,0,Math.PI*2);
     ctx.fill();
     s.y+=s.speed;
-    if(s.y>canvas.height){s.y=0;}
+    if(s.y>canvas.height)s.y=0;
   });
   requestAnimationFrame(drawStars);
 }
 drawStars();
 
-/* GALERIE AUTO */
-const items = document.querySelectorAll(".gallery img, .gallery video");
-let index = 0;
-
-function showNext(){
-  items.forEach(item=>{
-    item.classList.remove("active");
-    if(item.tagName==="VIDEO"){
-      item.pause();
-      item.currentTime=0;
-    }
-  });
-
-  let current = items[index];
-  current.classList.add("active");
-
-  if(current.tagName==="VIDEO"){
-    current.play();
-  }
-
-  index++;
-  if(index >= items.length){
-    setTimeout(showFinal,6000);
-  }else{
-    setTimeout(showNext,6000);
-  }
-}
-setTimeout(showNext,8000);
-
-/* FINAL */
-function showFinal(){
-  document.getElementById("finalMessage").style.opacity="1";
-  setTimeout(()=>{
-    document.getElementById("credits").style.bottom="0";
-  },5000);
-}
-
-/* COMPTEUR */
+// Compteur
 function updateCounter(){
   const startDate = new Date("2025-11-02T15:08:00");
   const now = new Date();
   const diff = now - startDate;
-
   const days = Math.floor(diff / (1000*60*60*24));
   const hours = Math.floor((diff / (1000*60*60)) % 24);
   const minutes = Math.floor((diff / (1000*60)) % 60);
-
   document.getElementById("counter").innerHTML =
     "Depuis " + days + " jours, " + hours + " heures et " + minutes + " minutes ❤️";
 }
 setInterval(updateCounter,60000);
 updateCounter();
 
-/* FLASH DROP */
-setTimeout(()=>{
-  let flash=document.createElement("div");
-  flash.style.position="fixed";
-  flash.style.top=0;
-  flash.style.left=0;
-  flash.style.width="100%";
-  flash.style.height="100%";
-  flash.style.background="white";
-  flash.style.opacity="0.8";
-  flash.style.zIndex="15";
-  document.body.appendChild(flash);
-  setTimeout(()=>flash.remove(),300);
-},35000);
+// Galerie interactive
+const items = document.querySelectorAll(".gallery img, .gallery video");
+let index = 0;
+function showItem(idx){
+  items.forEach(item=>{
+    item.classList.remove("active");
+    if(item.tagName==="VIDEO"){item.pause();item.currentTime=0;}
+  });
+  let current = items[idx];
+  current.classList.add("active");
+  if(current.tagName==="VIDEO") current.play();
+}
+showItem(index);
+
+// Boutons
+document.getElementById("nextBtn").onclick = ()=>{
+  if(index<items.length-1){index++; showItem(index);}
+  if(index===items.length-1){
+    document.getElementById("finalMessage").style.opacity="1";
+    setTimeout(()=>{document.getElementById("credits").style.bottom="0";},1500);
+  }
+};
+document.getElementById("prevBtn").onclick = ()=>{
+  if(index>0){index--; showItem(index);}
+};
+
+// Supprimer flash automatique
 </script>
 
 </body>
