@@ -13,6 +13,7 @@ color:white;
 font-family:'Segoe UI',sans-serif;
 text-align:center;
 overflow-x:hidden;
+scroll-behavior:smooth;
 }
 
 canvas{
@@ -29,44 +30,31 @@ flex-direction:column;
 justify-content:center;
 align-items:center;
 padding:40px 20px;
-opacity:0;
-transform:translateY(40px);
-transition:1.5s;
-}
-
-section.show{
-opacity:1;
-transform:translateY(0);
 }
 
 h1{
 color:red;
-font-size:2.3em;
+font-size:2.5em;
 margin-bottom:20px;
 }
 
-.memory-sequence{
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:60px;
-width:100%;
+.memory{
+opacity:0;
+transform:translateY(80px);
+transition:1.5s ease;
 }
 
-.memory-sequence img,
-.memory-sequence video{
+.memory.show{
+opacity:1;
+transform:translateY(0);
+}
+
+.memory img,
+.memory video{
 width:90%;
 max-width:750px;
 border-radius:20px;
-box-shadow:0 0 30px rgba(255,0,100,0.4);
-opacity:0;
-transform:translateY(60px);
-transition:1.2s ease;
-}
-
-.memory-sequence .show-media{
-opacity:1;
-transform:translateY(0);
+box-shadow:0 0 40px rgba(255,0,100,0.4);
 }
 
 video{
@@ -74,20 +62,44 @@ background:black;
 }
 
 button{
-padding:12px 25px;
+padding:15px 30px;
 border:none;
 border-radius:30px;
 background:red;
 color:white;
 cursor:pointer;
-margin:15px;
-transition:0.3s;
+margin-top:20px;
+font-size:1em;
 }
 
-button:hover{
-background:white;
+.fade-overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:black;
+opacity:0;
+pointer-events:none;
+transition:1s;
+z-index:5;
+}
+
+.fade-overlay.show{
+opacity:1;
+}
+
+.heart{
+position:fixed;
 color:red;
-transform:scale(1.05);
+font-size:20px;
+animation:floatUp 4s linear forwards;
+opacity:0.8;
+}
+
+@keyframes floatUp{
+0%{transform:translateY(0) scale(1);}
+100%{transform:translateY(-600px) scale(1.5);opacity:0;}
 }
 </style>
 </head>
@@ -95,94 +107,131 @@ transform:scale(1.05);
 <body>
 
 <canvas id="stars"></canvas>
+<div class="fade-overlay" id="fade"></div>
 
-<section class="show">
+<section>
 <h1>LIVIA ❤️</h1>
-<p>Notre Histoire en Images</p>
-<button onclick="startExperience()">Entrer dans notre univers ✨</button>
+<p>Notre Film</p>
+<button onclick="startExperience()">Lancer le Film 🎬</button>
 </section>
 
-<section id="memories">
-<h1>Nos Souvenirs ❤️</h1>
+<section id="film">
 
-<div class="memory-sequence">
+<div class="memory"><img src="IMG-20251227-WA0016.jpg"></div>
 
-<img src="IMG-20251227-WA0016.jpg">
-
-<video muted controls playsinline>
+<div class="memory">
+<video muted playsinline>
 <source src="VID-20251231-WA0031.mp4" type="video/mp4">
 </video>
+</div>
 
-<img src="IMG-20260116-WA0108.jpg">
+<div class="memory"><img src="IMG-20260116-WA0108.jpg"></div>
 
-<video muted controls playsinline>
+<div class="memory">
+<video muted playsinline>
 <source src="VID-20260101-WA0010.mp4" type="video/mp4">
 </video>
+</div>
 
-<img src="20251231_135631.jpg">
+<div class="memory"><img src="20251231_135631.jpg"></div>
 
-<video muted controls playsinline>
+<div class="memory">
+<video muted playsinline>
 <source src="VID-20260101-WA0011.mp4" type="video/mp4">
 </video>
+</div>
 
-<img src="IMG-20260116-WA0105.jpg">
+<div class="memory"><img src="IMG-20260116-WA0105.jpg"></div>
 
-<video muted controls playsinline>
+<div class="memory">
+<video muted playsinline>
 <source src="VID-20260101-WA0012.mp4" type="video/mp4">
 </video>
+</div>
 
-<img src="IMG-20260101-WA0037.jpg">
+<div class="memory"><img src="IMG-20260101-WA0037.jpg"></div>
 
-<video muted controls playsinline>
+<div class="memory">
+<video muted playsinline>
 <source src="VID-20260101-WA0013.mp4" type="video/mp4">
 </video>
+</div>
 
-<img src="1768590874870.jpg">
+<div class="memory"><img src="1768590874870.jpg"></div>
 
-<video muted controls playsinline>
+<div class="memory">
+<video muted playsinline>
 <source src="VID-20260110-WA0206.mp4" type="video/mp4">
 </video>
+</div>
 
-<video muted controls playsinline>
+<div class="memory">
+<video muted playsinline>
 <source src="VID-20260116-WA0140.mp4" type="video/mp4">
 </video>
-
 </div>
+
 </section>
 
 <audio id="music" src="tems-me-u.mp3" loop></audio>
 
 <script>
 
-// Lancer musique + afficher sections
+// MUSIQUE + AUTO SCROLL CINEMA
 function startExperience(){
 document.getElementById("music").play();
-document.querySelectorAll("section").forEach(sec=>{
-sec.classList.add("show");
-});
+autoScroll();
 }
 
-// Animation apparition au scroll
-const medias = document.querySelectorAll(".memory-sequence img, .memory-sequence video");
+function autoScroll(){
+let scrollAmount = 0;
+let speed = 0.5;
+setInterval(()=>{
+scrollAmount += speed;
+window.scrollTo(0, scrollAmount);
+},20);
+}
+
+// Apparition synchronisée
+const memories = document.querySelectorAll(".memory");
 
 const observer = new IntersectionObserver(entries=>{
 entries.forEach(entry=>{
 if(entry.isIntersecting){
-entry.target.classList.add("show-media");
+entry.target.classList.add("show");
+
+// Si vidéo → autoplay silencieux
+let video = entry.target.querySelector("video");
+if(video){
+video.play();
+}
 }
 });
-},{threshold:0.4});
+},{threshold:0.6});
 
-medias.forEach(media=>{
-observer.observe(media);
+memories.forEach(m=>{
+observer.observe(m);
 });
 
-// Forcer toutes les vidéos en mute
-document.querySelectorAll("video").forEach(video=>{
-video.muted = true;
+// Fondu noir léger entre sections
+window.addEventListener("scroll",()=>{
+let fade = document.getElementById("fade");
+fade.classList.add("show");
+setTimeout(()=>fade.classList.remove("show"),300);
 });
 
-// Étoiles animées
+// Cœurs flottants
+setInterval(()=>{
+let heart=document.createElement("div");
+heart.classList.add("heart");
+heart.innerHTML="❤️";
+heart.style.left=Math.random()*100+"%";
+heart.style.top="80%";
+document.body.appendChild(heart);
+setTimeout(()=>heart.remove(),4000);
+},1500);
+
+// Étoiles fond animé
 const canvas=document.getElementById("stars");
 const ctx=canvas.getContext("2d");
 
