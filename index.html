@@ -10,7 +10,7 @@ body{
   background:black;
   color:white;
   font-family:Arial,sans-serif;
-  overflow:hidden;
+  overflow-x:hidden;
   text-align:center;
 }
 
@@ -23,7 +23,7 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  font-size:4em;
+  font-size:8vw;
   letter-spacing:0.2em;
   color:#E50914;
   font-weight:bold;
@@ -59,22 +59,22 @@ canvas{
   display:flex;
   justify-content:center;
   align-items:center;
-  font-size:3em;
-  letter-spacing:5px;
+  font-size:6vw;
+  letter-spacing:2vw;
   z-index:30;
   animation:fadeOut 4s forwards 4s;
 }
 @keyframes fadeOut{to{opacity:0;visibility:hidden;}}
 
 /* Titres et compteur */
-h1{margin-top:20px;font-size:2em;position:relative;z-index:5;}
-#counter{position:relative;z-index:5;}
+h1{margin-top:20px;font-size:5vw;position:relative;z-index:5;}
+#counter{position:relative;z-index:5;font-size:4vw;}
 
 /* Galerie diaporama */
 .gallery {
   position: relative;
   width: 100%;
-  height: 70vh;
+  height: 50vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -86,7 +86,7 @@ h1{margin-top:20px;font-size:2em;position:relative;z-index:5;}
   position: absolute;
   max-width: 90%;
   max-height: 90%;
-  border-radius: 20px;
+  border-radius: 10px;
   opacity: 0;
   transform: scale(0.95);
   transition: opacity 1s, transform 1s;
@@ -105,9 +105,9 @@ h1{margin-top:20px;font-size:2em;position:relative;z-index:5;}
   margin-top:10px;
 }
 button{
-  padding:10px 20px;
+  padding:15px 25px;
   margin:0 10px;
-  font-size:1em;
+  font-size:4vw;
   cursor:pointer;
   border:none;
   border-radius:8px;
@@ -118,9 +118,9 @@ button{
 /* Message final */
 #finalMessage{
   position:absolute;
-  top:40%;
+  top:35%;
   width:100%;
-  font-size:2em;
+  font-size:6vw;
   opacity:0;
   transition:1s;
   z-index:10;
@@ -140,7 +140,7 @@ button{
   justify-content:center;
   align-items:center;
   transition:3s;
-  font-size:1.2em;
+  font-size:4vw;
   z-index:20;
 }
 
@@ -151,8 +151,19 @@ button{
   right:10px;
   z-index:50;
   padding:10px 20px;
-  font-size:1em;
+  font-size:4vw;
   cursor:pointer;
+}
+
+/* --- Responsive Mobile --- */
+@media (max-width:768px){
+  #netflixIntro{font-size:12vw;}
+  #intro{font-size:10vw; letter-spacing:1vw;}
+  h1{font-size:8vw;}
+  #counter{font-size:6vw;}
+  #finalMessage{font-size:8vw; top:30%;}
+  #controls button{font-size:5vw; padding:12px 18px;}
+  #credits{font-size:5vw;}
 }
 </style>
 </head>
@@ -181,15 +192,15 @@ button{
   <img src="assets/IMG-20260116-WA0105.jpg">
   <img src="assets/IMG-20260116-WA0108.jpg">
   
-  <video src="assets/Snapchat-1592542639-2.mp4" muted></video>
-  <video src="assets/Snapchat-442811167.mp4" muted></video>
-  <video src="assets/VID-20251231-WA0031.mp4" muted></video>
-  <video src="assets/VID-20260101-WA0010.mp4" muted></video>
-  <video src="assets/VID-20260101-WA0011.mp4" muted></video>
-  <video src="assets/VID-20260101-WA0012.mp4" muted></video>
-  <video src="assets/VID-20260101-WA0013.mp4" muted></video>
-  <video src="assets/VID-20260110-WA0206.mp4" muted></video>
-  <video src="assets/VID-20260116-WA0140.mp4" muted></video>
+  <video src="assets/Snapchat-1592542639-2.mp4" muted playsinline></video>
+  <video src="assets/Snapchat-442811167.mp4" muted playsinline></video>
+  <video src="assets/VID-20251231-WA0031.mp4" muted playsinline></video>
+  <video src="assets/VID-20260101-WA0010.mp4" muted playsinline></video>
+  <video src="assets/VID-20260101-WA0011.mp4" muted playsinline></video>
+  <video src="assets/VID-20260101-WA0012.mp4" muted playsinline></video>
+  <video src="assets/VID-20260101-WA0013.mp4" muted playsinline></video>
+  <video src="assets/VID-20260110-WA0206.mp4" muted playsinline></video>
+  <video src="assets/VID-20260116-WA0140.mp4" muted playsinline></video>
 </div>
 
 <!-- Contrôles -->
@@ -224,7 +235,10 @@ document.getElementById("playMusic").onclick = () => {
 // --- Étoiles ---
 const canvas=document.getElementById("stars");
 const ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+function resizeCanvas(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
 let stars=[];
 for(let i=0;i<200;i++){
   stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*2,speed:Math.random()*0.5});
