@@ -14,7 +14,7 @@ body{
   text-align:center;
 }
 
-/* Intro animation */
+/* Intro */
 #intro{
   position:fixed;
   width:100%;
@@ -42,7 +42,7 @@ canvas{
 h1{margin-top:20px;font-size:2em;position:relative;z-index:5;}
 #counter{position:relative;z-index:5;}
 
-/* Galerie plein écran */
+/* Galerie diaporama */
 .gallery {
   position: relative;
   width: 100%;
@@ -55,18 +55,19 @@ h1{margin-top:20px;font-size:2em;position:relative;z-index:5;}
 }
 
 .gallery img, .gallery video {
-  max-width: 80%;
-  max-height: 80%;
+  position: absolute;
+  max-width: 90%;
+  max-height: 90%;
   border-radius: 20px;
   opacity: 0;
   transform: scale(0.95);
   transition: opacity 1s, transform 1s;
-  position: absolute;
 }
 
 .gallery img.active, .gallery video.active {
   opacity:1;
   transform: scale(1.05);
+  z-index:10;
 }
 
 /* Contrôles boutons */
@@ -182,7 +183,7 @@ button{
 <button id="playMusic">▶ Play Music</button>
 
 <script>
-// Musique : play sur clic pour éviter blocage navigateur
+// Musique
 const music = document.getElementById("music");
 document.getElementById("playMusic").onclick = () => {
   music.play();
@@ -233,7 +234,7 @@ function showItem(idx){
     item.classList.remove("active");
     if(item.tagName==="VIDEO"){ item.pause(); item.currentTime=0; }
   });
-  let current=items[idx];
+  let current = items[idx];
   current.classList.add("active");
   if(current.tagName==="VIDEO") current.play();
 }
