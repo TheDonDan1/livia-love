@@ -14,7 +14,7 @@ body{
   text-align:center;
 }
 
-/* --- INTRO NETFLIX STYLE --- */
+/* --- NETFLIX STYLE INTRO --- */
 #netflixIntro{
   position:fixed;
   width:100%;
@@ -23,7 +23,7 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  font-size:8vw;
+  font-size:12vw;
   letter-spacing:0.2em;
   color:#E50914;
   font-weight:bold;
@@ -50,7 +50,7 @@ canvas{
   z-index:0;
 }
 
-/* Intro */
+/* Intro texte */
 #intro{
   position:fixed;
   width:100%;
@@ -59,68 +59,42 @@ canvas{
   display:flex;
   justify-content:center;
   align-items:center;
-  font-size:6vw;
-  letter-spacing:2vw;
+  font-size:10vw;
+  letter-spacing:1vw;
   z-index:30;
   animation:fadeOut 4s forwards 4s;
 }
 @keyframes fadeOut{to{opacity:0;visibility:hidden;}}
 
 /* Titres et compteur */
-h1{margin-top:20px;font-size:5vw;position:relative;z-index:5;}
-#counter{position:relative;z-index:5;font-size:4vw;}
+h1{margin-top:20px;font-size:8vw;position:relative;z-index:5;}
+#counter{position:relative;z-index:5;font-size:6vw;}
 
-/* Galerie diaporama */
+/* Galerie swipe */
 .gallery {
   position: relative;
   width: 100%;
   height: 50vh;
   display: flex;
-  justify-content: center;
-  align-items: center;
   overflow: hidden;
-  z-index: 5;
+  z-index:5;
+  touch-action: pan-y;
 }
 
 .gallery img, .gallery video {
-  position: absolute;
-  max-width: 90%;
-  max-height: 90%;
-  border-radius: 10px;
-  opacity: 0;
-  transform: scale(0.95);
-  transition: opacity 1s, transform 1s;
-}
-
-.gallery img.active, .gallery video.active {
-  opacity:1;
-  transform: scale(1.05);
-  z-index:10;
-}
-
-/* Contrôles boutons */
-#controls{
-  position:relative;
-  z-index:10;
-  margin-top:10px;
-}
-button{
-  padding:15px 25px;
-  margin:0 10px;
-  font-size:4vw;
-  cursor:pointer;
-  border:none;
-  border-radius:8px;
-  background:#fff;
-  color:black;
+  min-width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  flex-shrink: 0;
 }
 
 /* Message final */
 #finalMessage{
   position:absolute;
-  top:35%;
+  top:30%;
   width:100%;
-  font-size:6vw;
+  font-size:8vw;
   opacity:0;
   transition:1s;
   z-index:10;
@@ -140,7 +114,7 @@ button{
   justify-content:center;
   align-items:center;
   transition:3s;
-  font-size:4vw;
+  font-size:5vw;
   z-index:20;
 }
 
@@ -151,28 +125,28 @@ button{
   right:10px;
   z-index:50;
   padding:10px 20px;
-  font-size:4vw;
+  font-size:5vw;
   cursor:pointer;
 }
 
-/* --- Responsive Mobile --- */
+/* Responsive Mobile */
 @media (max-width:768px){
-  #netflixIntro{font-size:12vw;}
-  #intro{font-size:10vw; letter-spacing:1vw;}
-  h1{font-size:8vw;}
-  #counter{font-size:6vw;}
-  #finalMessage{font-size:8vw; top:30%;}
-  #controls button{font-size:5vw; padding:12px 18px;}
-  #credits{font-size:5vw;}
+  #netflixIntro{font-size:16vw;}
+  #intro{font-size:14vw; letter-spacing:2vw;}
+  h1{font-size:10vw;}
+  #counter{font-size:7vw;}
+  #finalMessage{font-size:10vw;}
+  #credits{font-size:6vw;}
+  #playMusic{font-size:6vw; padding:8px 15px;}
 }
 </style>
 </head>
 <body>
 
-<!-- NETFLIX STYLE INTRO -->
+<!-- NETFLIX INTRO -->
 <div id="netflixIntro">THE DON</div>
 
-<!-- Intro existant -->
+<!-- Intro -->
 <div id="intro">THE DON PRODUCTION</div>
 
 <!-- Canvas étoiles -->
@@ -182,7 +156,7 @@ button{
 <h1>Nos Souvenirs ❤️</h1>
 <h2 id="counter"></h2>
 
-<!-- Galerie -->
+<!-- Galerie swipe -->
 <div class="gallery">
   <img src="assets/1768590874870.jpg">
   <img src="assets/20251231_135631.jpg">
@@ -201,12 +175,6 @@ button{
   <video src="assets/VID-20260101-WA0013.mp4" muted playsinline></video>
   <video src="assets/VID-20260110-WA0206.mp4" muted playsinline></video>
   <video src="assets/VID-20260116-WA0140.mp4" muted playsinline></video>
-</div>
-
-<!-- Contrôles -->
-<div id="controls">
-  <button id="prevBtn">⬅ Précédent</button>
-  <button id="nextBtn">Suivant ➡</button>
 </div>
 
 <!-- Message final -->
@@ -270,31 +238,60 @@ function updateCounter(){
 setInterval(updateCounter,60000);
 updateCounter();
 
-// --- Galerie diaporama ---
-const items=document.querySelectorAll(".gallery img, .gallery video");
-let index=0;
-function showItem(idx){
-  items.forEach(item=>{
-    item.classList.remove("active");
-    if(item.tagName==="VIDEO"){ item.pause(); item.currentTime=0; }
-  });
-  let current = items[idx];
-  current.classList.add("active");
-  if(current.tagName==="VIDEO") current.play();
-}
-showItem(index);
+// --- Galerie swipe ---
+const gallery = document.querySelector('.gallery');
+const slides = Array.from(gallery.querySelectorAll('img, video'));
+let currentIndex = 0;
 
-// --- Navigation ---
-document.getElementById("nextBtn").onclick = ()=>{
-  if(index<items.length-1){ index++; showItem(index); }
-  if(index===items.length-1){
+function showSlide(index) {
+  slides.forEach((slide,i)=>{
+    slide.style.transform = `translateX(${100*(i-currentIndex)}%)`;
+    if(slide.tagName==="VIDEO"){ slide.pause(); slide.currentTime=0; }
+  });
+  const current = slides[index];
+  if(current.tagName==="VIDEO") current.play();
+
+  if(currentIndex === slides.length-1){
     document.getElementById("finalMessage").style.opacity="1";
     setTimeout(()=>{document.getElementById("credits").style.bottom="0";},1500);
+  } else {
+    document.getElementById("finalMessage").style.opacity="0";
+    document.getElementById("credits").style.bottom="-100%";
   }
-};
-document.getElementById("prevBtn").onclick = ()=>{
-  if(index>0){ index--; showItem(index); }
-};
+}
+showSlide(currentIndex);
+
+// Swipe mobile
+let startX = 0;
+let isDragging = false;
+
+gallery.addEventListener('touchstart', e => {
+  startX = e.touches[0].clientX;
+  isDragging = true;
+});
+gallery.addEventListener('touchend', e => {
+  if(!isDragging) return;
+  const dx = e.changedTouches[0].clientX - startX;
+  if(dx < -50 && currentIndex < slides.length-1) currentIndex++;
+  if(dx > 50 && currentIndex > 0) currentIndex--;
+  showSlide(currentIndex);
+  isDragging=false;
+});
+
+// Swipe desktop (drag souris)
+gallery.addEventListener('mousedown', e => {
+  startX = e.clientX;
+  isDragging = true;
+});
+gallery.addEventListener('mouseup', e => {
+  if(!isDragging) return;
+  const dx = e.clientX - startX;
+  if(dx < -50 && currentIndex < slides.length-1) currentIndex++;
+  if(dx > 50 && currentIndex > 0) currentIndex--;
+  showSlide(currentIndex);
+  isDragging=false;
+});
+gallery.addEventListener('mouseleave', e => { isDragging=false; });
 
 // --- Son Netflix intro ---
 const netflixSound = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-cinematic-whoosh-slide-2720.mp3");
