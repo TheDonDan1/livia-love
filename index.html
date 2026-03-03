@@ -14,7 +14,43 @@ body{
   text-align:center;
 }
 
-/* Intro animation */
+/* --- INTRO NETFLIX STYLE --- */
+#netflixIntro{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:4em;
+  letter-spacing:0.2em;
+  color:#E50914;
+  font-weight:bold;
+  opacity:0;
+  z-index:100;
+  transform: scale(0.5) rotateY(90deg);
+  animation:netflixIn 2s forwards, netflixOut 1s forwards 3s;
+}
+@keyframes netflixIn{
+  0% {opacity:0; transform: scale(0.5) rotateY(90deg);}
+  50% {opacity:1; transform: scale(1.2) rotateY(0deg); text-shadow:0 0 20px #E50914;}
+  70% {transform: scale(0.95); text-shadow:0 0 40px #E50914;}
+  100% {opacity:1; transform: scale(1); text-shadow:0 0 60px #E50914;}
+}
+@keyframes netflixOut{
+  to {opacity:0; visibility:hidden;}
+}
+
+/* Canvas étoiles */
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:0;
+}
+
+/* Intro */
 #intro{
   position:fixed;
   width:100%;
@@ -30,53 +66,37 @@ body{
 }
 @keyframes fadeOut{to{opacity:0;visibility:hidden;}}
 
-/* Canvas étoiles */
-canvas{
-  position:fixed;
-  top:0;
-  left:0;
-  z-index:0;
-}
-
 /* Titres et compteur */
 h1{margin-top:20px;font-size:2em;position:relative;z-index:5;}
 #counter{position:relative;z-index:5;}
 
-/* Galerie Post-it */
+/* Galerie diaporama */
 .gallery {
   position: relative;
   width: 100%;
   height: 70vh;
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  align-items: flex-start;
-  gap: 10px;
-  overflow-y: auto;
+  align-items: center;
+  overflow: hidden;
   z-index: 5;
-  padding: 10px;
 }
 
 .gallery img, .gallery video {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 12px;
-  opacity: 0.9;
-  transition: transform 0.3s, opacity 0.3s;
-  cursor: pointer;
-  box-shadow: 0 0 15px rgba(255,255,255,0.2);
+  position: absolute;
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 20px;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 1s, transform 1s;
 }
 
 .gallery img.active, .gallery video.active {
-  transform: scale(1.1);
-  opacity: 1;
+  opacity:1;
+  transform: scale(1.05);
+  z-index:10;
 }
-
-/* Scroll bar discrète */
-.gallery::-webkit-scrollbar { width: 6px; }
-.gallery::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
-.gallery::-webkit-scrollbar-track { background: transparent; }
 
 /* Contrôles boutons */
 #controls{
@@ -138,7 +158,10 @@ button{
 </head>
 <body>
 
-<!-- Intro -->
+<!-- NETFLIX STYLE INTRO -->
+<div id="netflixIntro">THE DON</div>
+
+<!-- Intro existant -->
 <div id="intro">THE DON PRODUCTION</div>
 
 <!-- Canvas étoiles -->
@@ -148,7 +171,7 @@ button{
 <h1>Nos Souvenirs ❤️</h1>
 <h2 id="counter"></h2>
 
-<!-- Galerie Post-it -->
+<!-- Galerie -->
 <div class="gallery">
   <img src="assets/1768590874870.jpg">
   <img src="assets/20251231_135631.jpg">
@@ -191,13 +214,14 @@ button{
 <button id="playMusic">▶ Play Music</button>
 
 <script>
-// Lecture musique
+// --- Musique ---
+const music = document.getElementById("music");
 document.getElementById("playMusic").onclick = () => {
-  document.getElementById("music").play();
+  music.play();
   document.getElementById("playMusic").style.display="none";
 };
 
-// Étoiles
+// --- Étoiles ---
 const canvas=document.getElementById("stars");
 const ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth; canvas.height=window.innerHeight;
@@ -219,7 +243,7 @@ function drawStars(){
 }
 drawStars();
 
-// Compteur
+// --- Compteur ---
 function updateCounter(){
   const startDate=new Date("2025-11-02T15:08:00");
   const now=new Date();
@@ -232,7 +256,7 @@ function updateCounter(){
 setInterval(updateCounter,60000);
 updateCounter();
 
-// Galerie interactive
+// --- Galerie diaporama ---
 const items=document.querySelectorAll(".gallery img, .gallery video");
 let index=0;
 function showItem(idx){
@@ -240,13 +264,13 @@ function showItem(idx){
     item.classList.remove("active");
     if(item.tagName==="VIDEO"){ item.pause(); item.currentTime=0; }
   });
-  let current=items[idx];
+  let current = items[idx];
   current.classList.add("active");
   if(current.tagName==="VIDEO") current.play();
 }
 showItem(index);
 
-// Boutons navigation
+// --- Navigation ---
 document.getElementById("nextBtn").onclick = ()=>{
   if(index<items.length-1){ index++; showItem(index); }
   if(index===items.length-1){
@@ -257,6 +281,12 @@ document.getElementById("nextBtn").onclick = ()=>{
 document.getElementById("prevBtn").onclick = ()=>{
   if(index>0){ index--; showItem(index); }
 };
+
+// --- Son Netflix intro ---
+const netflixSound = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-cinematic-whoosh-slide-2720.mp3");
+window.addEventListener('load', () => {
+  netflixSound.play().catch(()=>{console.log("Interagir pour le son");});
+});
 </script>
 </body>
 </html>
