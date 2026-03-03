@@ -13,26 +13,22 @@ body{
   overflow:hidden;
   text-align:center;
 }
-/* --- Netflix LD Intro/Outro --- */
-#netflixOverlay {
-  position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
+
+/* Intro animation */
+#intro{
+  position:fixed;
+  width:100%;
+  height:100%;
   background:black;
   display:flex;
   justify-content:center;
   align-items:center;
-  z-index:200;
+  font-size:3em;
+  letter-spacing:5px;
+  z-index:30;
+  animation:fadeOut 4s forwards 4s;
 }
-
-#netflixLogo {
-  color:red;
-  font-family: 'Arial Black', sans-serif;
-  font-size:8em;
-  letter-spacing:0.5em;
-  opacity:0;
-  transform:scale(0.8);
-}
+@keyframes fadeOut{to{opacity:0;visibility:hidden;}}
 
 /* Canvas étoiles */
 canvas{
@@ -46,33 +42,41 @@ canvas{
 h1{margin-top:20px;font-size:2em;position:relative;z-index:5;}
 #counter{position:relative;z-index:5;}
 
-/* Galerie diaporama */
+/* Galerie Post-it */
 .gallery {
   position: relative;
   width: 100%;
   height: 70vh;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
-  overflow: hidden;
+  align-items: flex-start;
+  gap: 10px;
+  overflow-y: auto;
   z-index: 5;
+  padding: 10px;
 }
 
 .gallery img, .gallery video {
-  position: absolute;
-  max-width: 90%;
-  max-height: 90%;
-  border-radius: 20px;
-  opacity: 0;
-  transform: scale(0.95);
-  transition: opacity 1s, transform 1s;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 12px;
+  opacity: 0.9;
+  transition: transform 0.3s, opacity 0.3s;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(255,255,255,0.2);
 }
 
 .gallery img.active, .gallery video.active {
-  opacity:1;
-  transform: scale(1.05);
-  z-index:10;
+  transform: scale(1.1);
+  opacity: 1;
 }
+
+/* Scroll bar discrète */
+.gallery::-webkit-scrollbar { width: 6px; }
+.gallery::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
+.gallery::-webkit-scrollbar-track { background: transparent; }
 
 /* Contrôles boutons */
 #controls{
@@ -105,7 +109,7 @@ button{
 /* Credits */
 #credits{
   position:fixed;
-  bottom:0;
+  bottom:-100%;
   left:0;
   width:100%;
   height:100%;
@@ -115,11 +119,9 @@ button{
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  overflow:auto;
+  transition:3s;
   font-size:1.2em;
   z-index:20;
-  opacity:0;
-  transition:2s;
 }
 
 /* Bouton musique */
@@ -136,18 +138,17 @@ button{
 </head>
 <body>
 
-<!-- Overlay Netflix LD -->
-<div id="netflixOverlay">
-  <div id="netflixLogo">LD</div>
-</div>
+<!-- Intro -->
+<div id="intro">THE DON PRODUCTION</div>
 
 <!-- Canvas étoiles -->
 <canvas id="stars"></canvas>
 
+<!-- Titres -->
 <h1>Nos Souvenirs ❤️</h1>
 <h2 id="counter"></h2>
 
-<!-- Galerie -->
+<!-- Galerie Post-it -->
 <div class="gallery">
   <img src="assets/1768590874870.jpg">
   <img src="assets/20251231_135631.jpg">
@@ -168,36 +169,35 @@ button{
   <video src="assets/VID-20260116-WA0140.mp4" muted></video>
 </div>
 
+<!-- Contrôles -->
 <div id="controls">
   <button id="prevBtn">⬅ Précédent</button>
   <button id="nextBtn">Suivant ➡</button>
 </div>
 
+<!-- Message final -->
 <div id="finalMessage">💍 Pour toujours toi et moi ❤️</div>
 
+<!-- Credits -->
 <div id="credits">
 <h1 style="color:red;">FIN ❤️</h1>
 <p>Une histoire écrite par THE DON</p>
 <p>Avec Livia comme plus belle actrice</p>
 <p>Depuis le 2 Novembre 2025</p>
-<p>Merci à tous ceux qui ont suivi notre histoire ❤️</p>
-<p>La musique par TEMS - Me & U</p>
-<p>Et bien plus...</p>
 </div>
 
+<!-- Musique -->
 <audio id="music" src="assets/tems-me-u.mp3" loop></audio>
 <button id="playMusic">▶ Play Music</button>
 
 <script>
-// ----------------- MUSIQUE -----------------
-const music = document.getElementById("music");
-const musicButton = document.getElementById("playMusic");
-musicButton.onclick = ()=>{
-  music.play();
-  musicButton.style.display="none";
+// Lecture musique
+document.getElementById("playMusic").onclick = () => {
+  document.getElementById("music").play();
+  document.getElementById("playMusic").style.display="none";
 };
 
-// ----------------- ÉTOILES -----------------
+// Étoiles
 const canvas=document.getElementById("stars");
 const ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth; canvas.height=window.innerHeight;
@@ -219,7 +219,7 @@ function drawStars(){
 }
 drawStars();
 
-// ----------------- COMPTEUR -----------------
+// Compteur
 function updateCounter(){
   const startDate=new Date("2025-11-02T15:08:00");
   const now=new Date();
@@ -232,7 +232,7 @@ function updateCounter(){
 setInterval(updateCounter,60000);
 updateCounter();
 
-// ----------------- DIAPORAMA -----------------
+// Galerie interactive
 const items=document.querySelectorAll(".gallery img, .gallery video");
 let index=0;
 function showItem(idx){
@@ -240,71 +240,23 @@ function showItem(idx){
     item.classList.remove("active");
     if(item.tagName==="VIDEO"){ item.pause(); item.currentTime=0; }
   });
-  let current = items[idx];
+  let current=items[idx];
   current.classList.add("active");
   if(current.tagName==="VIDEO") current.play();
 }
+showItem(index);
 
-// ----------------- NAVIGATION -----------------
+// Boutons navigation
 document.getElementById("nextBtn").onclick = ()=>{
   if(index<items.length-1){ index++; showItem(index); }
   if(index===items.length-1){
-    // Affiche message final
     document.getElementById("finalMessage").style.opacity="1";
-    // Après 2s, lance fermeture Netflix
-    setTimeout(()=>{ playNetflixOutro(); },2000);
+    setTimeout(()=>{document.getElementById("credits").style.bottom="0";},1500);
   }
 };
 document.getElementById("prevBtn").onclick = ()=>{
   if(index>0){ index--; showItem(index); }
 };
-
-// ----------------- INTRO NETFLIX LD -----------------
-function playNetflixIntro(callback){
-  const overlay = document.getElementById("netflixOverlay");
-  const logo = document.getElementById("netflixLogo");
-  logo.style.opacity="0";
-  logo.style.transform="scale(0.5)";
-  overlay.style.display="flex";
-
-  setTimeout(()=>{ logo.style.transition="0.7s"; logo.style.opacity="1"; logo.style.transform="scale(1.2)"; },100);
-  setTimeout(()=>{ logo.style.transform="scale(1)"; },700);
-
-  setTimeout(()=>{
-    logo.style.transition="1s";
-    logo.style.opacity="0";
-  },1500);
-
-  setTimeout(()=>{
-    overlay.style.display="none";
-    if(callback) callback();
-  },2500);
-}
-
-// ----------------- OUTRO NETFLIX LD -----------------
-function playNetflixOutro(){
-  const overlay = document.getElementById("netflixOverlay");
-  const logo = document.getElementById("netflixLogo");
-  overlay.style.display="flex";
-  logo.style.opacity="0";
-  logo.style.transform="scale(0.5)";
-
-  setTimeout(()=>{ logo.style.transition="0.7s"; logo.style.opacity="1"; logo.style.transform="scale(1.2)"; },100);
-  setTimeout(()=>{ logo.style.transform="scale(1)"; },700);
-
-  setTimeout(()=>{
-    logo.style.transition="1s";
-    logo.style.opacity="0";
-    // Affiche crédits
-    document.getElementById("credits").style.opacity="1";
-  },1500);
-}
-
-// ----------------- DEMARRAGE -----------------
-playNetflixIntro(()=>{
-  showItem(0);
-  if(!music.paused){ music.play(); }
-});
 </script>
 </body>
 </html>
