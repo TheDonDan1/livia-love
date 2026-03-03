@@ -13,7 +13,6 @@ body{
   overflow:hidden;
   text-align:center;
 }
-
 /* --- Netflix LD Intro/Outro --- */
 #netflixOverlay {
   position: fixed;
@@ -35,20 +34,7 @@ body{
   transform:scale(0.8);
 }
 
-/* Animation d'apparition Netflix */
-@keyframes netflixIn {
-  0% {opacity:0; transform: scale(0.5);}
-  50% {opacity:1; transform: scale(1.2);}
-  100% {opacity:1; transform: scale(1);}
-}
-
-@keyframes netflixOut {
-  0% {opacity:1; transform: scale(1);}
-  50% {opacity:1; transform: scale(1.2);}
-  100% {opacity:0; transform: scale(0.5);}
-}
-
-/* --- Canvas étoiles --- */
+/* Canvas étoiles */
 canvas{
   position:fixed;
   top:0;
@@ -156,7 +142,6 @@ button{
 <!-- Canvas étoiles -->
 <canvas id="stars"></canvas>
 
-<!-- Titres -->
 <h1>Nos Souvenirs ❤️</h1>
 <h2 id="counter"></h2>
 
@@ -181,16 +166,13 @@ button{
   <video src="assets/VID-20260116-WA0140.mp4" muted></video>
 </div>
 
-<!-- Contrôles -->
 <div id="controls">
   <button id="prevBtn">⬅ Précédent</button>
   <button id="nextBtn">Suivant ➡</button>
 </div>
 
-<!-- Message final -->
 <div id="finalMessage">💍 Pour toujours toi et moi ❤️</div>
 
-<!-- Credits -->
 <div id="credits">
 <h1 style="color:red;">FIN ❤️</h1>
 <p>Une histoire écrite par THE DON</p>
@@ -198,19 +180,18 @@ button{
 <p>Depuis le 2 Novembre 2025</p>
 </div>
 
-<!-- Musique -->
 <audio id="music" src="assets/tems-me-u.mp3" loop></audio>
 <button id="playMusic">▶ Play Music</button>
 
 <script>
-// Musique
+// ----------------- MUSIQUE -----------------
 const music = document.getElementById("music");
 document.getElementById("playMusic").onclick = () => {
   music.play();
   document.getElementById("playMusic").style.display="none";
 };
 
-// Étoiles
+// ----------------- ÉTOILES -----------------
 const canvas=document.getElementById("stars");
 const ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth; canvas.height=window.innerHeight;
@@ -232,7 +213,7 @@ function drawStars(){
 }
 drawStars();
 
-// Compteur
+// ----------------- COMPTEUR -----------------
 function updateCounter(){
   const startDate=new Date("2025-11-02T15:08:00");
   const now=new Date();
@@ -245,10 +226,9 @@ function updateCounter(){
 setInterval(updateCounter,60000);
 updateCounter();
 
-// Galerie diaporama
+// ----------------- DIAPORAMA -----------------
 const items=document.querySelectorAll(".gallery img, .gallery video");
 let index=0;
-
 function showItem(idx){
   items.forEach(item=>{
     item.classList.remove("active");
@@ -259,33 +239,30 @@ function showItem(idx){
   if(current.tagName==="VIDEO") current.play();
 }
 
-// Navigation
+// ----------------- NAVIGATION -----------------
 document.getElementById("nextBtn").onclick = ()=>{
   if(index<items.length-1){ index++; showItem(index); }
   if(index===items.length-1){
-    playNetflixOutro(); // fermeture style Netflix
+    // Affiche message final avant fermeture Netflix
+    document.getElementById("finalMessage").style.opacity="1";
+    setTimeout(()=>{ playNetflixOutro(); },1500);
   }
 };
 document.getElementById("prevBtn").onclick = ()=>{
   if(index>0){ index--; showItem(index); }
 };
 
-// --- Intro Netflix LD ---
+// ----------------- INTRO NETFLIX LD -----------------
 function playNetflixIntro(callback){
-  const logo = document.getElementById("netflixLogo");
   const overlay = document.getElementById("netflixOverlay");
+  const logo = document.getElementById("netflixLogo");
   logo.style.opacity="0";
   logo.style.transform="scale(0.5)";
+  overlay.style.display="flex";
 
-  // Animation entrée
-  setTimeout(()=>{
-    logo.style.transition="0.7s";
-    logo.style.opacity="1";
-    logo.style.transform="scale(1.2)";
-  },100);
-  setTimeout(()=>{logo.style.transform="scale(1)";}, 700);
+  setTimeout(()=>{ logo.style.transition="0.7s"; logo.style.opacity="1"; logo.style.transform="scale(1.2)"; },100);
+  setTimeout(()=>{ logo.style.transform="scale(1)"; },700);
 
-  // Fade out
   setTimeout(()=>{
     logo.style.transition="1s";
     logo.style.opacity="0";
@@ -297,30 +274,31 @@ function playNetflixIntro(callback){
   },2500);
 }
 
-// --- Outro Netflix LD ---
+// ----------------- OUTRO NETFLIX LD -----------------
 function playNetflixOutro(){
   const overlay = document.getElementById("netflixOverlay");
   const logo = document.getElementById("netflixLogo");
   overlay.style.display="flex";
   logo.style.opacity="0";
   logo.style.transform="scale(0.5)";
-  setTimeout(()=>{
-    logo.style.transition="0.7s";
-    logo.style.opacity="1";
-    logo.style.transform="scale(1.2)";
-  },100);
-  setTimeout(()=>{logo.style.transform="scale(1)";},700);
+
+  setTimeout(()=>{ logo.style.transition="0.7s"; logo.style.opacity="1"; logo.style.transform="scale(1.2)"; },100);
+  setTimeout(()=>{ logo.style.transform="scale(1)"; },700);
 
   setTimeout(()=>{
     logo.style.transition="1s";
     logo.style.opacity="0";
-    document.getElementById("finalMessage").style.opacity="1";
-    setTimeout(()=>{document.getElementById("credits").style.bottom="0";},1500);
+    // Affiche crédits après fermeture Netflix
+    setTimeout(()=>{ document.getElementById("credits").style.bottom="0"; },500);
   },1500);
 }
 
-// Lance intro au démarrage
-playNetflixIntro(()=>{ showItem(0); });
+// ----------------- DEMARRAGE -----------------
+playNetflixIntro(()=>{
+  showItem(0);
+  // démarre musique si l'utilisateur a cliqué
+  if(music.paused){ music.play(); }
+});
 </script>
 </body>
 </html>
