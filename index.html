@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Notre Histoire</title>
-
+<title>Notre Histoire ❤️</title>
 <style>
 body{
   margin:0;
@@ -15,7 +14,7 @@ body{
   text-align:center;
 }
 
-/* INTRO STYLE CINEMA */
+/* --- INTRO NETFLIX STYLE --- */
 #netflixIntro{
   position:fixed;
   width:100%;
@@ -33,18 +32,32 @@ body{
   transform: scale(0.5) rotateY(90deg);
   animation:netflixIn 2s forwards, netflixOut 1s forwards 3s;
 }
-
 @keyframes netflixIn{
   0% {opacity:0; transform: scale(0.5) rotateY(90deg);}
   50% {opacity:1; transform: scale(1.2) rotateY(0deg); text-shadow:0 0 20px #E50914;}
+  70% {transform: scale(0.95); text-shadow:0 0 40px #E50914;}
   100% {opacity:1; transform: scale(1); text-shadow:0 0 60px #E50914;}
 }
-
 @keyframes netflixOut{
   to {opacity:0; visibility:hidden;}
 }
 
-/* ETOILES */
+/* Intro THE DON Production */
+#intro{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:3em;
+  letter-spacing:5px;
+  z-index:30;
+  animation:fadeOut 4s forwards 4s;
+}
+@keyframes fadeOut{to{opacity:0;visibility:hidden;}}
+
 canvas{
   position:fixed;
   top:0;
@@ -52,11 +65,9 @@ canvas{
   z-index:0;
 }
 
-/* TITRES */
 h1{margin-top:20px;font-size:2em;position:relative;z-index:5;}
 #counter{position:relative;z-index:5;}
 
-/* GALERIE */
 .gallery {
   position: relative;
   width: 100%;
@@ -84,13 +95,11 @@ h1{margin-top:20px;font-size:2em;position:relative;z-index:5;}
   z-index:10;
 }
 
-/* CONTROLES */
 #controls{
   position:relative;
   z-index:10;
   margin-top:10px;
 }
-
 button{
   padding:10px 20px;
   margin:0 10px;
@@ -102,7 +111,6 @@ button{
   color:black;
 }
 
-/* MESSAGE FINAL */
 #finalMessage{
   position:absolute;
   top:40%;
@@ -113,7 +121,16 @@ button{
   z-index:10;
 }
 
-/* CREDIT FINAL */
+#playMusic{
+  position:fixed;
+  top:10px;
+  right:10px;
+  z-index:50;
+  padding:10px 20px;
+  font-size:1em;
+  cursor:pointer;
+}
+
 #creditSlide {
   position: fixed;
   top:0;
@@ -130,22 +147,23 @@ button{
 }
 
 #creditText {
-  font-family: 'Brush Script MT', cursive;
+  font-family: 'Segoe Script', 'Brush Script MT', 'Pacifico', cursive;
   font-size:2em;
   color:white;
   text-align:center;
   line-height:2em;
   max-width:80%;
+  white-space:pre-wrap;
 }
 </style>
 </head>
 <body>
 
 <div id="netflixIntro">THE DON</div>
-
+<div id="intro">THE DON PRODUCTION</div>
 <canvas id="stars"></canvas>
 
-<h1>Nos Souvenirs</h1>
+<h1>Nos Souvenirs ❤️</h1>
 <h2 id="counter"></h2>
 
 <div class="gallery">
@@ -156,7 +174,7 @@ button{
   <img src="assets/IMG-20260101-WA0037.jpg">
   <img src="assets/IMG-20260116-WA0105.jpg">
   <img src="assets/IMG-20260116-WA0108.jpg">
-
+  
   <video src="assets/Snapchat-1592542639-2.mp4" muted></video>
   <video src="assets/Snapchat-442811167.mp4" muted></video>
   <video src="assets/VID-20251231-WA0031.mp4" muted></video>
@@ -169,8 +187,8 @@ button{
 </div>
 
 <div id="controls">
-  <button id="prevBtn">Precedent</button>
-  <button id="nextBtn">Suivant</button>
+  <button id="prevBtn">⬅ Precedent</button>
+  <button id="nextBtn">Suivant ➡</button>
 </div>
 
 <div id="finalMessage">Pour toujours toi et moi</div>
@@ -179,82 +197,13 @@ button{
   <div id="creditText"></div>
 </div>
 
+<audio id="music" src="assets/tems-me-u.mp3" loop></audio>
+<button id="playMusic">▶ Play Music</button>
+
 <script>
 
-/* ETOILES */
-const canvas=document.getElementById("stars");
-const ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+/* TA FONCTION CREDIT CORRIGEE UNIQUEMENT */
 
-let stars=[];
-for(let i=0;i<200;i++){
-  stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*2,speed:Math.random()*0.5});
-}
-
-function drawStars(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle="white";
-  stars.forEach(s=>{
-    ctx.beginPath();
-    ctx.arc(s.x,s.y,s.radius,0,Math.PI*2);
-    ctx.fill();
-    s.y+=s.speed;
-    if(s.y>canvas.height) s.y=0;
-  });
-  requestAnimationFrame(drawStars);
-}
-drawStars();
-
-/* COMPTEUR */
-function updateCounter(){
-  const startDate=new Date("2025-11-02T15:08:00");
-  const now=new Date();
-  const diff=now-startDate;
-  const days=Math.floor(diff/(1000*60*60*24));
-  const hours=Math.floor((diff/(1000*60*60))%24);
-  const minutes=Math.floor((diff/(1000*60))%60);
-  document.getElementById("counter").innerHTML=
-    "Depuis "+days+" jours, "+hours+" heures et "+minutes+" minutes";
-}
-setInterval(updateCounter,60000);
-updateCounter();
-
-/* GALERIE */
-const items=document.querySelectorAll(".gallery img, .gallery video");
-let index=0;
-
-function showItem(idx){
-  items.forEach(item=>{
-    item.classList.remove("active");
-    if(item.tagName==="VIDEO"){ item.pause(); item.currentTime=0; }
-  });
-  let current = items[idx];
-  current.classList.add("active");
-  if(current.tagName==="VIDEO") current.play();
-}
-showItem(index);
-
-/* NAVIGATION */
-document.getElementById("nextBtn").onclick = ()=>{
-  if(index<items.length-1){
-    index++;
-    showItem(index);
-  }
-  if(index===items.length-1){
-    document.getElementById("finalMessage").style.opacity="1";
-    setTimeout(showCreditSlide,1500);
-  }
-};
-
-document.getElementById("prevBtn").onclick = ()=>{
-  if(index>0){
-    index--;
-    showItem(index);
-  }
-};
-
-/* CREDIT FINAL EFFET PLUME */
 function showCreditSlide(){
   const creditSlide = document.getElementById("creditSlide");
   const creditText = document.getElementById("creditText");
@@ -266,7 +215,7 @@ function showCreditSlide(){
     "Mais je sais ce que je veux devenir.",
     "Et je sais avec qui je veux le devenir.",
     "Avec toi a mes cotes.",
-    "Pour construire et grandir chaque jour.",
+    "Pour construire apprendre et grandir chaque jour.",
     "Pour toujours toi et moi."
   ];
 
