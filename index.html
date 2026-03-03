@@ -70,7 +70,7 @@ canvas{
 h1{margin-top:20px;font-size:2em;position:relative;z-index:5;}
 #counter{position:relative;z-index:5;}
 
-/* Galerie swipe */
+/* Galerie diaporama */
 .gallery {
   position: relative;
   width: 100%;
@@ -96,6 +96,23 @@ h1{margin-top:20px;font-size:2em;position:relative;z-index:5;}
   opacity:1;
   transform: scale(1.05);
   z-index:10;
+}
+
+/* Contrôles boutons */
+#controls{
+  position:relative;
+  z-index:10;
+  margin-top:10px;
+}
+button{
+  padding:10px 20px;
+  margin:0 10px;
+  font-size:1em;
+  cursor:pointer;
+  border:none;
+  border-radius:8px;
+  background:#fff;
+  color:black;
 }
 
 /* Message final */
@@ -160,7 +177,7 @@ h1{margin-top:20px;font-size:2em;position:relative;z-index:5;}
   <img src="assets/20251231_135631.jpg">
   <img src="assets/IMG-20251227-WA0014.jpg">
   <img src="assets/IMG-20251227-WA0016.jpg">
-  <img src="assets/20260101-WA0037.jpg">
+  <img src="assets/IMG-20260101-WA0037.jpg">
   <img src="assets/IMG-20260116-WA0105.jpg">
   <img src="assets/IMG-20260116-WA0108.jpg">
   
@@ -173,6 +190,12 @@ h1{margin-top:20px;font-size:2em;position:relative;z-index:5;}
   <video src="assets/VID-20260101-WA0013.mp4" muted></video>
   <video src="assets/VID-20260110-WA0206.mp4" muted></video>
   <video src="assets/VID-20260116-WA0140.mp4" muted></video>
+</div>
+
+<!-- Contrôles -->
+<div id="controls">
+  <button id="prevBtn">⬅ Précédent</button>
+  <button id="nextBtn">Suivant ➡</button>
 </div>
 
 <!-- Message final -->
@@ -233,11 +256,9 @@ function updateCounter(){
 setInterval(updateCounter,60000);
 updateCounter();
 
-// --- Galerie swipe / drag ---
-const gallery = document.querySelector('.gallery');
-const items = document.querySelectorAll(".gallery img, .gallery video");
-let index = 0;
-
+// --- Galerie diaporama ---
+const items=document.querySelectorAll(".gallery img, .gallery video");
+let index=0;
 function showItem(idx){
   items.forEach(item=>{
     item.classList.remove("active");
@@ -246,53 +267,26 @@ function showItem(idx){
   let current = items[idx];
   current.classList.add("active");
   if(current.tagName==="VIDEO") current.play();
-
-  if(index === items.length-1){
-    document.getElementById("finalMessage").style.opacity="1";
-    setTimeout(()=>{document.getElementById("credits").style.bottom="0";},1500);
-  } else {
-    document.getElementById("finalMessage").style.opacity="0";
-    document.getElementById("credits").style.bottom="-100%";
-  }
 }
 showItem(index);
 
-// Swipe mobile
-let startX = 0;
-let isDragging = false;
-gallery.addEventListener('touchstart', e => {
-  startX = e.touches[0].clientX;
-  isDragging = true;
-});
-gallery.addEventListener('touchend', e => {
-  if(!isDragging) return;
-  const dx = e.changedTouches[0].clientX - startX;
-  if(dx < -50 && index < items.length-1) index++;
-  if(dx > 50 && index > 0) index--;
-  showItem(index);
-  isDragging=false;
-});
-
-// Drag desktop
-gallery.addEventListener('mousedown', e => { startX = e.clientX; isDragging = true; });
-gallery.addEventListener('mouseup', e => {
-  if(!isDragging) return;
-  const dx = e.clientX - startX;
-  if(dx < -50 && index < items.length-1) index++;
-  if(dx > 50 && index > 0) index--;
-  showItem(index);
-  isDragging=false;
-});
-gallery.addEventListener('mouseleave', e => { isDragging=false; });
+// --- Navigation ---
+document.getElementById("nextBtn").onclick = ()=>{
+  if(index<items.length-1){ index++; showItem(index); }
+  if(index===items.length-1){
+    document.getElementById("finalMessage").style.opacity="1";
+    setTimeout(()=>{document.getElementById("credits").style.bottom="0";},1500);
+  }
+};
+document.getElementById("prevBtn").onclick = ()=>{
+  if(index>0){ index--; showItem(index); }
+};
 
 // --- Son Netflix intro ---
 const netflixSound = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-cinematic-whoosh-slide-2720.mp3");
 window.addEventListener('load', () => {
   netflixSound.play().catch(()=>{console.log("Interagir pour le son");});
 });
-
-// --- Masquer boutons existants ---
-document.getElementById("controls").style.display = "none";
 </script>
 </body>
 </html>
