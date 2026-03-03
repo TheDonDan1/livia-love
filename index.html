@@ -13,7 +13,7 @@ body{
   overflow:hidden;
   text-align:center;
 }
-/* --- Netflix LD Intro/Outro --- */
+/* --- Netflix LD Overlay --- */
 #netflixOverlay {
   position: fixed;
   top:0; left:0;
@@ -29,9 +29,18 @@ body{
   color:red;
   font-family: 'Arial Black', sans-serif;
   font-size:8em;
-  letter-spacing:0.5em;
+  letter-spacing:0.2em;
   opacity:0;
-  transform:scale(0.8);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* Lettres individuelles pour animation */
+.letter {
+  display:inline-block;
+  opacity:0;
+  transform:scale(0.5) translateY(-50px);
 }
 
 /* Canvas étoiles */
@@ -105,7 +114,7 @@ button{
 /* Credits */
 #credits{
   position:fixed;
-  bottom:0;
+  top:0;
   left:0;
   width:100%;
   height:100%;
@@ -116,10 +125,11 @@ button{
   justify-content:center;
   align-items:center;
   overflow:auto;
-  font-size:1.2em;
+  font-size:1.5em;
   z-index:20;
   opacity:0;
-  transition:2s;
+  padding:20px;
+  text-align:center;
 }
 
 /* Bouton musique */
@@ -138,10 +148,9 @@ button{
 
 <!-- Overlay Netflix LD -->
 <div id="netflixOverlay">
-  <div id="netflixLogo">LD</div>
+  <div id="netflixLogo"></div>
 </div>
 
-<!-- Canvas étoiles -->
 <canvas id="stars"></canvas>
 
 <h1>Nos Souvenirs ❤️</h1>
@@ -156,16 +165,8 @@ button{
   <img src="assets/IMG-20260101-WA0037.jpg">
   <img src="assets/IMG-20260116-WA0105.jpg">
   <img src="assets/IMG-20260116-WA0108.jpg">
-  
   <video src="assets/Snapchat-1592542639-2.mp4" muted></video>
   <video src="assets/Snapchat-442811167.mp4" muted></video>
-  <video src="assets/VID-20251231-WA0031.mp4" muted></video>
-  <video src="assets/VID-20260101-WA0010.mp4" muted></video>
-  <video src="assets/VID-20260101-WA0011.mp4" muted></video>
-  <video src="assets/VID-20260101-WA0012.mp4" muted></video>
-  <video src="assets/VID-20260101-WA0013.mp4" muted></video>
-  <video src="assets/VID-20260110-WA0206.mp4" muted></video>
-  <video src="assets/VID-20260116-WA0140.mp4" muted></video>
 </div>
 
 <div id="controls">
@@ -249,9 +250,7 @@ function showItem(idx){
 document.getElementById("nextBtn").onclick = ()=>{
   if(index<items.length-1){ index++; showItem(index); }
   if(index===items.length-1){
-    // Affiche message final
     document.getElementById("finalMessage").style.opacity="1";
-    // Après 2s, lance fermeture Netflix
     setTimeout(()=>{ playNetflixOutro(); },2000);
   }
 };
@@ -259,45 +258,53 @@ document.getElementById("prevBtn").onclick = ()=>{
   if(index>0){ index--; showItem(index); }
 };
 
-// ----------------- INTRO NETFLIX LD -----------------
-function playNetflixIntro(callback){
-  const overlay = document.getElementById("netflixOverlay");
-  const logo = document.getElementById("netflixLogo");
-  logo.style.opacity="0";
-  logo.style.transform="scale(0.5)";
-  overlay.style.display="flex";
-
-  setTimeout(()=>{ logo.style.transition="0.7s"; logo.style.opacity="1"; logo.style.transform="scale(1.2)"; },100);
-  setTimeout(()=>{ logo.style.transform="scale(1)"; },700);
-
+// ----------------- NETFLIX LD ANIMATION -----------------
+function animateNetflixLogo(logo, callback){
+  const text = "LD";
+  logo.innerHTML = "";
+  for(let i=0;i<text.length;i++){
+    let span = document.createElement("span");
+    span.classList.add("letter");
+    span.textContent = text[i];
+    logo.appendChild(span);
+  }
+  const letters = logo.querySelectorAll(".letter");
+  letters.forEach((l,i)=>{
+    setTimeout(()=>{
+      l.style.transition="0.6s";
+      l.style.opacity="1";
+      l.style.transform="scale(1) translateY(0)";
+    }, i*300);
+  });
   setTimeout(()=>{
-    logo.style.transition="1s";
-    logo.style.opacity="0";
-  },1500);
-
-  setTimeout(()=>{
-    overlay.style.display="none";
-    if(callback) callback();
-  },2500);
+    letters.forEach(l=>{
+      l.style.transition="1s";
+      l.style.opacity="0";
+      l.style.transform="scale(0.5) translateY(-50px)";
+    });
+  }, letters.length*300 + 1000);
+  setTimeout(()=>{ if(callback) callback(); }, letters.length*300 + 2000);
 }
 
-// ----------------- OUTRO NETFLIX LD -----------------
+// Intro Netflix LD
+function playNetflixIntro(callback){
+  const overlay = document.getElementById("netflixOverlay");
+  overlay.style.display="flex";
+  const logo = document.getElementById("netflixLogo");
+  animateNetflixLogo(logo, ()=>{
+    overlay.style.display="none";
+    if(callback) callback();
+  });
+}
+
+// Outro Netflix LD
 function playNetflixOutro(){
   const overlay = document.getElementById("netflixOverlay");
-  const logo = document.getElementById("netflixLogo");
   overlay.style.display="flex";
-  logo.style.opacity="0";
-  logo.style.transform="scale(0.5)";
-
-  setTimeout(()=>{ logo.style.transition="0.7s"; logo.style.opacity="1"; logo.style.transform="scale(1.2)"; },100);
-  setTimeout(()=>{ logo.style.transform="scale(1)"; },700);
-
-  setTimeout(()=>{
-    logo.style.transition="1s";
-    logo.style.opacity="0";
-    // Affiche crédits
+  const logo = document.getElementById("netflixLogo");
+  animateNetflixLogo(logo, ()=>{
     document.getElementById("credits").style.opacity="1";
-  },1500);
+  });
 }
 
 // ----------------- DEMARRAGE -----------------
