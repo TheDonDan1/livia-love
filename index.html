@@ -105,7 +105,7 @@ button{
 /* Credits */
 #credits{
   position:fixed;
-  bottom:-100%;
+  bottom:0;
   left:0;
   width:100%;
   height:100%;
@@ -115,9 +115,11 @@ button{
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  transition:3s;
+  overflow:auto;
   font-size:1.2em;
   z-index:20;
+  opacity:0;
+  transition:2s;
 }
 
 /* Bouton musique */
@@ -178,6 +180,9 @@ button{
 <p>Une histoire écrite par THE DON</p>
 <p>Avec Livia comme plus belle actrice</p>
 <p>Depuis le 2 Novembre 2025</p>
+<p>Merci à tous ceux qui ont suivi notre histoire ❤️</p>
+<p>La musique par TEMS - Me & U</p>
+<p>Et bien plus...</p>
 </div>
 
 <audio id="music" src="assets/tems-me-u.mp3" loop></audio>
@@ -186,9 +191,10 @@ button{
 <script>
 // ----------------- MUSIQUE -----------------
 const music = document.getElementById("music");
-document.getElementById("playMusic").onclick = () => {
+const musicButton = document.getElementById("playMusic");
+musicButton.onclick = ()=>{
   music.play();
-  document.getElementById("playMusic").style.display="none";
+  musicButton.style.display="none";
 };
 
 // ----------------- ÉTOILES -----------------
@@ -243,9 +249,10 @@ function showItem(idx){
 document.getElementById("nextBtn").onclick = ()=>{
   if(index<items.length-1){ index++; showItem(index); }
   if(index===items.length-1){
-    // Affiche message final avant fermeture Netflix
+    // Affiche message final
     document.getElementById("finalMessage").style.opacity="1";
-    setTimeout(()=>{ playNetflixOutro(); },1500);
+    // Après 2s, lance fermeture Netflix
+    setTimeout(()=>{ playNetflixOutro(); },2000);
   }
 };
 document.getElementById("prevBtn").onclick = ()=>{
@@ -288,16 +295,15 @@ function playNetflixOutro(){
   setTimeout(()=>{
     logo.style.transition="1s";
     logo.style.opacity="0";
-    // Affiche crédits après fermeture Netflix
-    setTimeout(()=>{ document.getElementById("credits").style.bottom="0"; },500);
+    // Affiche crédits
+    document.getElementById("credits").style.opacity="1";
   },1500);
 }
 
 // ----------------- DEMARRAGE -----------------
 playNetflixIntro(()=>{
   showItem(0);
-  // démarre musique si l'utilisateur a cliqué
-  if(music.paused){ music.play(); }
+  if(!music.paused){ music.play(); }
 });
 </script>
 </body>
