@@ -187,11 +187,11 @@ button{
 </div>
 
 <div id="controls">
-  <button id="prevBtn">⬅ Precedent</button>
+  <button id="prevBtn">⬅ Précédent</button>
   <button id="nextBtn">Suivant ➡</button>
 </div>
 
-<div id="finalMessage">Pour toujours toi et moi</div>
+<div id="finalMessage">💍 Pour toujours toi et moi ❤️</div>
 
 <div id="creditSlide">
   <div id="creditText"></div>
@@ -202,8 +202,95 @@ button{
 
 <script>
 
-/* TA FONCTION CREDIT CORRIGEE UNIQUEMENT */
+/* ===== MUSIQUE ===== */
+const music = document.getElementById("music");
+document.getElementById("playMusic").onclick = () => {
+  music.play();
+  document.getElementById("playMusic").style.display="none";
+};
 
+/* ===== ETOILES ===== */
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth; 
+canvas.height=window.innerHeight;
+
+let stars=[];
+for(let i=0;i<200;i++){
+  stars.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    radius:Math.random()*2,
+    speed:Math.random()*0.5
+  });
+}
+
+function drawStars(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="white";
+  stars.forEach(s=>{
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.radius,0,Math.PI*2);
+    ctx.fill();
+    s.y+=s.speed;
+    if(s.y>canvas.height) s.y=0;
+  });
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+
+/* ===== COMPTEUR ===== */
+function updateCounter(){
+  const startDate=new Date("2025-11-02T15:08:00");
+  const now=new Date();
+  const diff=now-startDate;
+  const days=Math.floor(diff/(1000*60*60*24));
+  const hours=Math.floor((diff/(1000*60*60))%24);
+  const minutes=Math.floor((diff/(1000*60))%60);
+  document.getElementById("counter").innerHTML=
+    "Depuis "+days+" jours, "+hours+" heures et "+minutes+" minutes ❤️";
+}
+setInterval(updateCounter,60000);
+updateCounter();
+
+/* ===== GALERIE ===== */
+const items=document.querySelectorAll(".gallery img, .gallery video");
+let index=0;
+
+function showItem(idx){
+  items.forEach(item=>{
+    item.classList.remove("active");
+    if(item.tagName==="VIDEO"){ 
+      item.pause(); 
+      item.currentTime=0; 
+    }
+  });
+  let current = items[idx];
+  current.classList.add("active");
+  if(current.tagName==="VIDEO") current.play();
+}
+showItem(index);
+
+/* ===== NAVIGATION ===== */
+document.getElementById("nextBtn").onclick = ()=>{
+  if(index<items.length-1){ 
+    index++; 
+    showItem(index); 
+  }
+  if(index===items.length-1){
+    document.getElementById("finalMessage").style.opacity="1";
+    setTimeout(showCreditSlide,1500);
+  }
+};
+
+document.getElementById("prevBtn").onclick = ()=>{
+  if(index>0){ 
+    index--; 
+    showItem(index); 
+  }
+};
+
+/* ===== CREDIT FINAL CORRIGE ===== */
 function showCreditSlide(){
   const creditSlide = document.getElementById("creditSlide");
   const creditText = document.getElementById("creditText");
