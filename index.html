@@ -42,15 +42,7 @@ body{
   to {opacity:0; visibility:hidden;}
 }
 
-/* Canvas étoiles */
-canvas{
-  position:fixed;
-  top:0;
-  left:0;
-  z-index:0;
-}
-
-/* Intro */
+/* Intro THE DON Production */
 #intro{
   position:fixed;
   width:100%;
@@ -65,6 +57,14 @@ canvas{
   animation:fadeOut 4s forwards 4s;
 }
 @keyframes fadeOut{to{opacity:0;visibility:hidden;}}
+
+/* Canvas étoiles */
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:0;
+}
 
 /* Titres et compteur */
 h1{margin-top:20px;font-size:2em;position:relative;z-index:5;}
@@ -126,24 +126,6 @@ button{
   z-index:10;
 }
 
-/* Credits */
-#credits{
-  position:fixed;
-  bottom:-100%;
-  left:0;
-  width:100%;
-  height:100%;
-  background:black;
-  color:white;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  transition:3s;
-  font-size:1.2em;
-  z-index:20;
-}
-
 /* Bouton musique */
 #playMusic{
   position:fixed;
@@ -154,6 +136,32 @@ button{
   font-size:1em;
   cursor:pointer;
 }
+
+/* --- CRÉDIT FINAL PLUME STYLE --- */
+#creditSlide {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:200;
+  visibility:hidden;
+}
+
+#creditText {
+  font-family: 'Segoe Script', 'Brush Script MT', 'Pacifico', cursive;
+  font-size:2em;
+  color:white;
+  text-align:center;
+  line-height:2em;
+  max-width:80%;
+  white-space:pre-wrap;
+}
 </style>
 </head>
 <body>
@@ -161,7 +169,7 @@ button{
 <!-- NETFLIX STYLE INTRO -->
 <div id="netflixIntro">THE DON</div>
 
-<!-- Intro existant -->
+<!-- Intro THE DON Production -->
 <div id="intro">THE DON PRODUCTION</div>
 
 <!-- Canvas étoiles -->
@@ -201,12 +209,9 @@ button{
 <!-- Message final -->
 <div id="finalMessage">💍 Pour toujours toi et moi ❤️</div>
 
-<!-- Credits -->
-<div id="credits">
-<h1 style="color:red;">FIN ❤️</h1>
-<p>Une histoire écrite par THE DON</p>
-<p>Avec Livia comme plus belle actrice</p>
-<p>Depuis le 2 Novembre 2025</p>
+<!-- Crédit final style plume -->
+<div id="creditSlide">
+  <div id="creditText"></div>
 </div>
 
 <!-- Musique -->
@@ -275,18 +280,47 @@ document.getElementById("nextBtn").onclick = ()=>{
   if(index<items.length-1){ index++; showItem(index); }
   if(index===items.length-1){
     document.getElementById("finalMessage").style.opacity="1";
-    setTimeout(()=>{document.getElementById("credits").style.bottom="0";},1500);
+    setTimeout(showCreditSlide,1500); // après message final
   }
 };
 document.getElementById("prevBtn").onclick = ()=>{
   if(index>0){ index--; showItem(index); }
 };
 
-// --- Son Netflix intro ---
-const netflixSound = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-cinematic-whoosh-slide-2720.mp3");
-window.addEventListener('load', () => {
-  netflixSound.play().catch(()=>{console.log("Interagir pour le son");});
-});
+// --- Fonction crédit plume style FR ---
+function showCreditSlide(){
+  const creditSlide = document.getElementById("creditSlide");
+  const creditText = document.getElementById("creditText");
+  creditSlide.style.visibility = "visible";
+
+  const lines = [
+    `Je sais que je ne suis pas parfait…`,
+    `Mais je sais ce que je veux devenir,`,
+    `Et avec qui je veux le devenir…`,
+    `Toi, à mes côtés, pour chaque pas, chaque rêve, chaque instant…`,
+    `Pour toujours, toi et moi ❤️`
+  ];
+
+  let currentLine = 0;
+  let currentChar = 0;
+
+  function typeLine(){
+    if(currentLine < lines.length){
+      if(currentChar < lines[currentLine].length){
+        creditText.innerHTML += lines[currentLine][currentChar];
+        currentChar++;
+        setTimeout(typeLine, 100); // vitesse écriture
+      } else {
+        creditText.innerHTML += "<br><br>"; // saut de ligne
+        currentLine++;
+        currentChar = 0;
+        setTimeout(typeLine, 400); // délai entre les lignes
+      }
+    }
+  }
+
+  typeLine();
+}
 </script>
 </body>
 </html>
